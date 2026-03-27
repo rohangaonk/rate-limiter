@@ -7,16 +7,19 @@ import Redis from 'ioredis';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Explicitly connect Redis (lazyConnect=true means it waits otherwise)
-  const redis = app.get<Redis>(REDIS_CLIENT);
-  await redis.connect();
-
-  // Pre-load Lua script SHA into Redis
-  const rateLimiter = app.get(RateLimiterService);
-  await rateLimiter.loadScript();
+  // Pre-load Lua script if Redis is already up, or let it happen on first request
+  try {
+    const rateLimiter = app.get(RateLimiterService);
+    await rateLimiter.loadScript();
+  } catch (err) {
+    console.warn('[Bootstrap] Could not pre-load Lua script, will retry on first request:', err.message);
+  }
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
-  console.log(`Rate limiter running on http://localhost:${port}`);
+  // Listen on 0.0.0.0 for ECS networking
+  await app.listen(port, '0.0.0.0');
+  
+  console.log(`[Bootstrap] Rate limiter is UP and listening on http://0.0.0.0:${port}`);
+  console.log(`[Bootstrap] Health check endpoint: http://0.0.0.0:${port}/health`);
 }
 bootstrap();

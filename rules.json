@@ -1,0 +1,5 @@
+[
+  { "prefix": "ip",     "capacity": 500, "refillRate": 100 },
+  { "prefix": "user",   "capacity": 200, "refillRate": 50  },
+  { "prefix": "apikey", "capacity": 300, "refillRate": 75  }
+]

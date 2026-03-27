@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { BucketConfig } from '../common/interfaces/bucket-config.interface';
+import { IRulesService } from './rules.interface';
 
+/**
+ * Local (static) rules provider.
+ * Reads rate limit rules once from the RATE_LIMIT_RULES env variable at startup.
+ * Used when APP_MODE=local (default).
+ */
 @Injectable()
-export class RulesService {
+export class LocalRulesService implements IRulesService {
   private rules: Map<string, BucketConfig> = new Map();
 
   constructor(private readonly config: ConfigService) {
@@ -30,3 +36,7 @@ export class RulesService {
     return Array.from(this.rules.values());
   }
 }
+
+// Re-export under the old name so existing imports keep working during migration
+export { LocalRulesService as RulesService };
+

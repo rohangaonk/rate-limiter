@@ -18,7 +18,10 @@ COPY package*.json ./
 RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env ./.env
+
+# NOTE: No .env is copied here.
+# - In local Docker: mount .env via docker-compose or pass env vars.
+# - In AWS ECS: env vars are injected by the task definition.
 
 EXPOSE 3000
 
