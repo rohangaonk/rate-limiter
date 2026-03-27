@@ -1,0 +1,27 @@
+# Compiled
+/dist
+/node_modules
+
+# Environment
+.env
+.env.production
+.env.staging
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NestJS / Docker
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.build
+coverage
+test-results
+
+# Docker
+.dockerignore
+# But keep docker-compose for others to use
+# docker-compose.override.yml
+
+.agent
